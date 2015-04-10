@@ -1,0 +1,3 @@
+gconftool-2 -s -t string /apps/guake/style/font/color "#BBBBBBBBBBBB"
+gconftool-2 -s -t string /apps/guake/style/background/color "#000000000000"
+gconftool-2 -s -t string /apps/guake/style/font/palette "#000000000000:#E5E522222222:#A6A6E3E32D2D:#FCFC95951E1E:#C4C48D8DFFFF:#FAFA25257373:#6767D9D9F0F0:#F2F2F2F2F2F2:#555555555555:#FFFF55555555:#5555FFFF5555:#FFFFFFFF5555:#55555555FFFF:#FFFF5555FFFF:#5555FFFFFFFF:#FFFFFFFFFFFF"
