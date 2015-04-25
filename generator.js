@@ -33,37 +33,45 @@ var getBackgroundColor = function (file) {
 };
 
 var getPaletteColors = function (file) {
-    var color = file[2]
+    var temp = file[2]
         .split('gconftool-2 -s -t string /apps/guake/style/font/palette "').join('')
         .split('"').join('');
 
-    return color;
+    var colors = [[], [], [], []];
+    var counter = -1;
+
+    temp.split(':').forEach(function (color, i) {
+        if (i % 5 === 0) {
+            counter ++;
+        }
+
+        colors[counter].push(color);
+    });
+
+    return colors;
 };
 
 var mergeColors = function (foreground, background, palette) {
-    palette+= ':' + background;
-    palette+= ':' + foreground;
+    palette[palette.length - 1].push(background);
+    palette[palette.length - 1].push(foreground);
 
-    return palette;
+    var result = [];
+
+    for (var i = 0; i < palette.length; i++) {
+        result.push(palette[i].join(':'));
+    }
+
+    return result;
 };
 
 var makePaletteString = function (palette) {
-    var result = '# ' + palette.name;
+    var result = '\t\'' + palette.name + '\'\:\n';
 
-    palette.colors.split(':').forEach(function (color, i) {
-        if (i % 5 === 0) {
-            result += '\t\n';
-        }
-
-        result += color + ':';
+    palette.colors.forEach(function (row) {
+        result += '\t\t\'' + row + '\:\'\n';
     });
 
-    result = result.split('\n').join('\n\'');
-    result = result.split('\:\t\n').join('\:\'\t\n');
-    result = result.slice(0, - 1) + '\'';
-    result = result.split('\n').join('\n\t');
-
-    paletteStr += '\n\t' + result + ',';
+    paletteStr += result.slice(0,-3) + '\',\n';
 };
 
 var makeGuakePalette = function (filename, index) {
@@ -86,9 +94,9 @@ var paletteStr;
 var logPaletteStr = function () {
     var files = fs.readdirSync(filespath);
 
-    paletteStr = 'PALETTES = [';
+    paletteStr = 'PALETTES = {\n';
     files.forEach(makeGuakePalette);
-    paletteStr = paletteStr.slice(0, - 1) + '\n]';
+    paletteStr = paletteStr.slice(0,-2) + '\n}';
 
     console.log(paletteStr);
 };
